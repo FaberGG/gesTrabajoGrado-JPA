@@ -1,6 +1,6 @@
 # 🎓 Sistema de Gestión de Trabajos de Grado
 
-Sistema desarrollado con Spring Boot y PostgreSQL para la gestión de trabajos de grado, estudiantes, profesores y directores.
+Sistema desarrollado con Spring Boot y PostgreSQL para la gestión de trabajos de grado, estudiantes, profesores y directores
 
 ---
 
