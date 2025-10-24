@@ -8,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class GesTrabajoGradoJpaApplicationTests {
+
     @Test
     void contextLoads() {
     }
