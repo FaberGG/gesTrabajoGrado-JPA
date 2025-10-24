@@ -53,6 +53,6 @@ public class FormatoA {
     // Relación hacia TrabajoGrado (lado "muchos")
     @ManyToOne
     @JoinColumn(name = "trabajo_grado_id", nullable = false)
-    @JsonIgnore  // CRÍTICO: Evita bucle infinito en JSON
+    @JsonIgnore  // Evita bucle infinito en JSON
     private TrabajoGrado trabajoGrado;
 }
