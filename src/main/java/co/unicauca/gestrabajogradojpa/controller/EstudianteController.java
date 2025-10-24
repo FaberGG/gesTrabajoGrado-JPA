@@ -6,23 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/estudiantes")
-@CrossOrigin(origins = "*") // Permite llamadas desde Postman o navegador
+@CrossOrigin(origins = "*")
 public class EstudianteController {
 
     @Autowired
     private EstudianteRepository estudianteRepository;
 
-    //  Obtener todos los estudiantes
     @GetMapping
     public List<Estudiante> getAllEstudiantes() {
         return estudianteRepository.findAll();
     }
 
-    //  Obtener un estudiante por ID
     @GetMapping("/{id}")
     public ResponseEntity<Estudiante> getEstudianteById(@PathVariable Long id) {
         return estudianteRepository.findById(id)
@@ -30,26 +30,46 @@ public class EstudianteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Crear un nuevo estudiante
     @PostMapping
     public Estudiante createEstudiante(@RequestBody Estudiante estudiante) {
         return estudianteRepository.save(estudiante);
     }
 
-    //  Actualizar un estudiante existente
     @PutMapping("/{id}")
-    public ResponseEntity<Estudiante> updateEstudiante(@PathVariable Long id, @RequestBody Estudiante estudianteDetails) {
+    public ResponseEntity<?> updateEstudiante(@PathVariable Long id, @RequestBody Estudiante estudianteDetails) {
         return estudianteRepository.findById(id)
                 .map(estudiante -> {
-                    estudiante.setNombres(estudianteDetails.getNombres());
-                    estudiante.setApellidos(estudianteDetails.getApellidos());
-                    estudiante.setCodigoEstudiante(estudianteDetails.getCodigoEstudiante());
+                    // Verificar si intentan modificar campos bloqueados
+                    if (estudianteDetails.getCodigoEstudiante() != null || 
+                        estudianteDetails.getPrograma() != null) {
+                        
+                        Map<String, Object> warning = new HashMap<>();
+                        warning.put("error", "Campos no modificables");
+                        warning.put("mensaje", "No tienes permiso para modificar: codigoEstudiante y programa");
+                        warning.put("camposBloqueados", List.of("codigoEstudiante", "programa"));
+                        warning.put("camposModificables", List.of("nombres", "apellidos", "email", "celular"));
+                        return ResponseEntity.status(403).body(warning); // 403 Forbidden
+                    }
+                    
+                    // Campos modificables por el estudiante
+                    if (estudianteDetails.getNombres() != null) {
+                        estudiante.setNombres(estudianteDetails.getNombres());
+                    }
+                    if (estudianteDetails.getApellidos() != null) {
+                        estudiante.setApellidos(estudianteDetails.getApellidos());
+                    }
+                    if (estudianteDetails.getEmail() != null) {
+                        estudiante.setEmail(estudianteDetails.getEmail());
+                    }
+                    if (estudianteDetails.getCelular() != null) {
+                        estudiante.setCelular(estudianteDetails.getCelular());
+                    }
+                    
                     return ResponseEntity.ok(estudianteRepository.save(estudiante));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    //  Eliminar un estudiante
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEstudiante(@PathVariable Long id) {
         return estudianteRepository.findById(id)

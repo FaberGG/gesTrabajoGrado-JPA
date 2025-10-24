@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 @RestController
 @RequestMapping("/api/profesores")
 @CrossOrigin(origins = "*")
@@ -37,18 +38,35 @@ public class ProfesorController {
     }
 
     // PUT: Actualizar profesor existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Profesor> updateProfesor(
-            @PathVariable Long id,
-            @RequestBody Profesor profesorDetails) {
-
+   @PutMapping("/{id}")
+    public ResponseEntity<?> updateProfesor(@PathVariable Long id, @RequestBody Profesor profesorDetails) {
         return profesorRepository.findById(id)
                 .map(profesor -> {
-                    profesor.setNombres(profesorDetails.getNombres());
-                    profesor.setApellidos(profesorDetails.getApellidos());
-                    profesor.setEmail(profesorDetails.getEmail());
-                    profesor.setPrograma(profesorDetails.getPrograma());
-                    profesor.setCelular(profesorDetails.getCelular());
+                    // Verificar si intentan modificar campos bloqueados
+                    if (profesorDetails.getPrograma() != null) {
+                        
+                        Map<String, Object> warning = new HashMap<>();
+                        warning.put("error", "Campo no modificable");
+                        warning.put("mensaje", "No tienes permiso para modificar el programa");
+                        warning.put("camposBloqueados", List.of("programa"));
+                        warning.put("camposModificables", List.of("nombres", "apellidos", "email", "celular"));
+                        return ResponseEntity.status(403).body(warning); // 403 Forbidden
+                    }
+                    
+                    // Campos modificables por el profesor
+                    if (profesorDetails.getNombres() != null) {
+                        profesor.setNombres(profesorDetails.getNombres());
+                    }
+                    if (profesorDetails.getApellidos() != null) {
+                        profesor.setApellidos(profesorDetails.getApellidos());
+                    }
+                    if (profesorDetails.getEmail() != null) {
+                        profesor.setEmail(profesorDetails.getEmail());
+                    }
+                    if (profesorDetails.getCelular() != null) {
+                        profesor.setCelular(profesorDetails.getCelular());
+                    }
+                    
                     Profesor actualizado = profesorRepository.save(profesor);
                     return ResponseEntity.ok(actualizado);
                 })

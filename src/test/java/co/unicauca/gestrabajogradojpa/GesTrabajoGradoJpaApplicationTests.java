@@ -6,13 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-//@ActiveProfiles("h")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class GesTrabajoGradoJpaApplicationTests {
-
     @Test
     void contextLoads() {
     }
-
 }
+

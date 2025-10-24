@@ -33,7 +33,24 @@ public class DataLoader implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
 
-        System.out.println("🔄 Iniciando carga de datos de prueba...");
+        System.out.println(" Verificando datos de prueba...");
+
+        //  VERIFICAR SI YA EXISTEN DATOS
+        if (estudianteRepository.count() > 0 ||
+                profesorRepository.count() > 0 ||
+                trabajoGradoRepository.count() > 0) {
+            System.out.println("Los datos ya existen en la base de datos");
+            System.out.println(" Registros actuales:");
+            System.out.println("   - Tipos de trabajo: " + tipoTrabajoRepository.count());
+            System.out.println("   - Estudiantes: " + estudianteRepository.count());
+            System.out.println("   - Profesores: " + profesorRepository.count());
+            System.out.println("   - Trabajos de grado: " + trabajoGradoRepository.count());
+            System.out.println("   - Formatos A: " + formatoARepository.count());
+            System.out.println("  Omitiendo carga de datos de prueba...");
+            return;
+        }
+
+        System.out.println(" Iniciando carga de datos de prueba...");
 
         // 1. CREAR Y GUARDAR TIPOS DE TRABAJO
         TipoTrabajo tipoInvestigacion = new TipoTrabajo(null, EnumModalidad.INVESTIGACION, 2);
@@ -41,72 +58,72 @@ public class DataLoader implements CommandLineRunner {
         TipoTrabajo tipoCoterminal = new TipoTrabajo(null, EnumModalidad.PLAN_COTERMINAL, 2);
 
         List<TipoTrabajo> tipos = tipoTrabajoRepository.saveAll(
-            Arrays.asList(tipoInvestigacion, tipoPractica, tipoCoterminal)
+                Arrays.asList(tipoInvestigacion, tipoPractica, tipoCoterminal)
         );
-        System.out.println("✅ Tipos de trabajo guardados: " + tipos.size());
+        System.out.println("Tipos de trabajo guardados: " + tipos.size());
 
         // 2. CREAR Y GUARDAR ESTUDIANTES
         Estudiante estudiante1 = new Estudiante(
-            "Juan Carlos",
-            "Cárdenas Muñoz",
-            "juan.cardenas@unicauca.edu.co",
-            "3201234567",
-            "10236547",
-            EnumProgram.INGENIERIA_DE_SISTEMAS
+                "Juan Carlos",
+                "Cárdenas Muñoz",
+                "juan.cardenas@unicauca.edu.co",
+                "3201234567",
+                "10236547",
+                EnumProgram.INGENIERIA_DE_SISTEMAS
         );
 
         Estudiante estudiante2 = new Estudiante(
-            "María Fernanda",
-            "López Ortiz",
-            "maria.lopez@unicauca.edu.co",
-            "3209876543",
-            "10245896",
-            EnumProgram.INGENIERIA_ELECTRONICA_Y_TELECOMUNICACIONES
+                "María Fernanda",
+                "López Ortiz",
+                "maria.lopez@unicauca.edu.co",
+                "3209876543",
+                "10245896",
+                EnumProgram.INGENIERIA_ELECTRONICA_Y_TELECOMUNICACIONES
         );
 
         Estudiante estudiante3 = new Estudiante(
-            "Carlos Andrés",
-            "Gómez Pérez",
-            "carlos.gomez@unicauca.edu.co",
-            "3157891234",
-            "10258741",
-            EnumProgram.INGENIERIA_DE_SISTEMAS
+                "Carlos Andrés",
+                "Gómez Pérez",
+                "carlos.gomez@unicauca.edu.co",
+                "3157891234",
+                "10258741",
+                EnumProgram.INGENIERIA_DE_SISTEMAS
         );
 
         List<Estudiante> estudiantes = estudianteRepository.saveAll(
-            Arrays.asList(estudiante1, estudiante2, estudiante3)
+                Arrays.asList(estudiante1, estudiante2, estudiante3)
         );
-        System.out.println("✅ Estudiantes guardados: " + estudiantes.size());
+        System.out.println(" Estudiantes guardados: " + estudiantes.size());
 
         // 3. CREAR Y GUARDAR PROFESORES
         Profesor profesor1 = new Profesor(
-            "Julio Ariel",
-            "Hurtado Alegría",
-            "jhurtado@unicauca.edu.co",
-            "3101234567",
-            EnumProgram.INGENIERIA_DE_SISTEMAS
+                "Julio Ariel",
+                "Hurtado Alegría",
+                "jhurtado@unicauca.edu.co",
+                "3101234567",
+                EnumProgram.INGENIERIA_DE_SISTEMAS
         );
 
         Profesor profesor2 = new Profesor(
-            "Francisco José",
-            "Pino Correa",
-            "fpino@unicauca.edu.co",
-            "3109876543",
-            EnumProgram.INGENIERIA_DE_SISTEMAS
+                "Francisco José",
+                "Pino Correa",
+                "fpino@unicauca.edu.co",
+                "3109876543",
+                EnumProgram.INGENIERIA_DE_SISTEMAS
         );
 
         Profesor profesor3 = new Profesor(
-            "Carlos Alberto",
-            "Cobos Lozada",
-            "ccobos@unicauca.edu.co",
-            "3157894561",
-            EnumProgram.INGENIERIA_ELECTRONICA_Y_TELECOMUNICACIONES
+                "Carlos Alberto",
+                "Cobos Lozada",
+                "ccobos@unicauca.edu.co",
+                "3157894561",
+                EnumProgram.INGENIERIA_ELECTRONICA_Y_TELECOMUNICACIONES
         );
 
         List<Profesor> profesores = profesorRepository.saveAll(
-            Arrays.asList(profesor1, profesor2, profesor3)
+                Arrays.asList(profesor1, profesor2, profesor3)
         );
-        System.out.println("✅ Profesores guardados: " + profesores.size());
+        System.out.println(" Profesores guardados: " + profesores.size());
 
         // 4. CREAR Y GUARDAR TRABAJOS DE GRADO
 
@@ -156,9 +173,9 @@ public class DataLoader implements CommandLineRunner {
         trabajo3.setTipoTrabajo(tipoCoterminal);
 
         List<TrabajoGrado> trabajos = trabajoGradoRepository.saveAll(
-            Arrays.asList(trabajo1, trabajo2, trabajo3)
+                Arrays.asList(trabajo1, trabajo2, trabajo3)
         );
-        System.out.println("✅ Trabajos de grado guardados: " + trabajos.size());
+        System.out.println(" Trabajos de grado guardados: " + trabajos.size());
 
         // 5. CREAR Y GUARDAR FORMATOS A
 
@@ -191,12 +208,12 @@ public class DataLoader implements CommandLineRunner {
         formato2.setTrabajoGrado(trabajo2);
 
         List<FormatoA> formatos = formatoARepository.saveAll(
-            Arrays.asList(formato1, formato2)
+                Arrays.asList(formato1, formato2)
         );
-        System.out.println("✅ Formatos A guardados: " + formatos.size());
+        System.out.println(" Formatos A guardados: " + formatos.size());
 
-        System.out.println("✅ ¡Carga de datos completada exitosamente!");
-        System.out.println("📊 Total de registros creados:");
+        System.out.println(" ¡Carga de datos completada exitosamente!");
+        System.out.println(" Total de registros creados:");
         System.out.println("   - Tipos de trabajo: " + tipos.size());
         System.out.println("   - Estudiantes: " + estudiantes.size());
         System.out.println("   - Profesores: " + profesores.size());
